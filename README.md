@@ -48,7 +48,7 @@ npm install --save react-fileupload-progress
 * `formGetter`: If custom `formRenderer` is used, you need to implement this method and must return `FormData` object.
   `React.PropTypes.func => {return form}`
 
-* `progressRnederer`: For custom progress rendering,
+* `progressRenderer`: For custom progress rendering,
   First parameter is the progress of uploading process(0 ~ 100).
   If `xhr` has error, second parameter will be `true`.
   When third parameter is called, current `xhr` will be aborted.
@@ -69,7 +69,7 @@ npm install --save react-fileupload-progress
 'use strict';
 
 import React from 'react';
-import FileUploadProgress  from 'fileUploadProgress';
+import FileUploadProgress  from 'react-fileupload-progress';
 
 
 class App extends React.Component {

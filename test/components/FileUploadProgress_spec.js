@@ -20,7 +20,7 @@ describe('Test of FileUploadProgress', () => {
     expect(component.props.onAbort).to.be.a('function');
     expect(component.props.formGetter).to.be.a('undefined');
     expect(component.props.formRenderer).to.be.a('function');
-    expect(component.props.progressRnederer).to.be.a('function');
+    expect(component.props.progressRenderer).to.be.a('function');
     expect(component.props.formCustomizer).to.be.a('function');
     expect(component.props.beforeSend).to.be.a('function');
   });
@@ -181,7 +181,7 @@ describe('Test of FileUploadProgress', () => {
         // https://github.com/sinonjs/sinon/blob/master/lib/sinon/util/fake_xml_http_request.js#L454
         expect(onProgressSpy.calledOnce).to.be.equal(true)
         let progress = onProgressSpy.args[0][2];
-        expect(progress).to.be.eql(100);
+        expect(progress).to.be.eql(0);
 
         expect(onAbortSpy.calledOnce).to.be.equal(true);
         let event = onAbortSpy.args[0][0];
@@ -190,15 +190,7 @@ describe('Test of FileUploadProgress', () => {
         expect(event.type).to.be.eql('abort');
         expect(request.readyState).to.be.eql(sinon.FakeXMLHttpRequest.UNSENT);
 
-        // onError also called
-        // https://github.com/sinonjs/sinon/blob/master/lib/sinon/util/fake_xml_http_request.js#L547
-        expect(onErrorSpy.calledOnce).to.be.equal(true);
-        let event2 = onErrorSpy.args[0][0];
-        let request2 = onErrorSpy.args[0][1];
-
-        expect(event2.type).to.be.eql('load');
-        expect(request2.readyState).to.be.eql(sinon.FakeXMLHttpRequest.UNSENT);
-
+        expect(onErrorSpy.called).to.be.not.equal(true)
         expect(onLoadSpy.called).to.be.not.equal(true)
       });
     });
@@ -351,7 +343,7 @@ describe('Test of FileUploadProgress', () => {
         component = TestUtils.renderIntoDocument(
           <FileUploadProgress url='https://localhost.com/api'
             onAbort={onAbortSpy}
-            progressRnederer={customProgressRenderer}/>);
+            progressRenderer={customProgressRenderer}/>);
       });
 
       afterEach(() => {

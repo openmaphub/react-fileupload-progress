@@ -2,6 +2,7 @@
 
 import {EventEmitter} from 'events';
 import React from 'react';
+import ReactDom from 'react-dom';
 import objectAssign from 'object-assign';
 
 const styles = {
@@ -81,7 +82,7 @@ class FileUploadProgress extends React.Component {
 
   render() {
     let formElement = this.props.formRenderer(this.onSubmit.bind(this), this.onFileClick.bind(this));
-    let progessElement = this.props.progressRnederer(this.state.progress, this.state.hasError, this.cancelUpload.bind(this));
+    let progessElement = this.props.progressRenderer(this.state.progress, this.state.hasError, this.cancelUpload.bind(this));
 
     return (
       <div>
@@ -95,7 +96,7 @@ class FileUploadProgress extends React.Component {
     if (this.props.formGetter) {
       return this.props.formGetter();
     }
-    return new FormData(React.findDOMNode(this.refs.form));
+    return new FormData(ReactDom.findDOMNode(this.refs.form));
   }
 
   _doUpload() {
@@ -106,14 +107,14 @@ class FileUploadProgress extends React.Component {
     req.addEventListener('load', (e) =>{
       this.proxy.removeAllListeners(['abort']);
       let newState = {progress: 100};
-      if (req.status !== 200) {
+      if (req.status >= 200 && req.status <= 299) {
+        this.setState(newState, () => {
+          this.props.onLoad(e, req);
+        });
+      } else {
         newState.hasError = true;
         this.setState(newState, () => {
           this.props.onError(e, req);
-        });
-      } else {
-        this.setState(newState, () => {
-          this.props.onLoad(e, req);
         });
       }
     }, false);
@@ -159,7 +160,7 @@ FileUploadProgress.propTypes = {
   url: React.PropTypes.string.isRequired,
   formGetter: React.PropTypes.func,
   formRenderer: React.PropTypes.func,
-  progressRnederer: React.PropTypes.func,
+  progressRenderer: React.PropTypes.func,
   formCustomizer: React.PropTypes.func,
   beforeSend: React.PropTypes.func,
   onProgress: React.PropTypes.func,
@@ -179,7 +180,7 @@ FileUploadProgress.defaultProps = {
       </form>
     )
   },
-  progressRnederer: (progress, hasError, cancelHandler) => {
+  progressRenderer: (progress, hasError, cancelHandler) => {
     if (hasError || progress > -1 ) {
       let barStyle = objectAssign({}, styles.progressBar);
       barStyle.width = progress + '%';
