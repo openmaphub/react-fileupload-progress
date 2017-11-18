@@ -58,8 +58,6 @@
   },
   "dependencies": {
     "object-assign": "^4.0.1",
-    "react": "^15.0.1",
-    "react-dom": "^15.0.1",
     "sinon": "^1.17.4"
   },
   "peerDependencies": {
